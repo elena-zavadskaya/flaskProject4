@@ -8,7 +8,8 @@ class Config:
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or "smtp.googlemail.com"
     MAIL_PORT = os.environ.get('MAIL_PORT') or "587"
     MAIL_USE_TLS = int(os.environ.get('MAIL_USE_TLS', '5870'))
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "elena.zavadskaya111@gmail.com"
+    MAIL_USERNAME = os.environ.get(
+        'MAIL_USERNAME') or "elena.zavadskaya111@gmail.com"
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "fdga kaeo zkds tckc"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     FLASK_ADMIN = 'test@testovich.ru'
@@ -21,18 +22,18 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'mysql://root:@localhost/flask_education'
+        'mysql://root:@localhost/flask_education'
 
 
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'mysql://root:@localhost/flask_education'
+        'mysql://root:@localhost/flask_education'
 
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'mysql://root:@localhost/flask_education'
+        'mysql://root:@localhost/flask_education'
 
 
 config = {

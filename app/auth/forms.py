@@ -7,16 +7,20 @@ from app.models import User, Role
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 64), Email()])
+    email = StringField('Email', validators=[
+                        DataRequired(), Length(1, 64), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField("Войти")
 
 
 class RegistrationForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 64), Email()])
-    username = StringField('Username', validators=[DataRequired(), Length(1, 64), Regexp('[A-Za-z][A-Za-z0-9_.]*$', 0, 'Username must have only letters, numbers, dots, and underscores')])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('password2', message="Password doesn't match")])
+    email = StringField('Email', validators=[
+                        DataRequired(), Length(1, 64), Email()])
+    username = StringField('Username', validators=[DataRequired(), Length(1, 64), Regexp(
+        '[A-Za-z][A-Za-z0-9_.]*$', 0, 'Username must have only letters, numbers, dots, and underscores')])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo(
+        'password2', message="Password doesn't match")])
     password2 = PasswordField('Confirm Password', validators=[DataRequired()])
     name = StringField('Full Name', validators=[DataRequired(), Length(1, 64)])
     role = SelectField('Role', coerce=int, validators=[DataRequired()])
@@ -35,9 +39,4 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("Username already use")
 
 
-class NewsForm(FlaskForm):
-    title = StringField('Название', validators=[DataRequired(), Length(max=128)])
-    image = StringField('Изображение URL', validators=[Length(max=256)])
-    description = TextAreaField('Описание', validators=[Length(max=256)])
-    content = TextAreaField('Текст', validators=[DataRequired()])
-    submit = SubmitField('Отправить')
+

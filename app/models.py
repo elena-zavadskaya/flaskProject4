@@ -124,7 +124,8 @@ class User(db.Model, UserMixin):
 
     # @password.setter
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
+        self.password_hash = generate_password_hash(
+            password, method='pbkdf2:sha256')
 
     def password_verify(self, password):
         return check_password_hash(self.password_hash, password)
@@ -154,7 +155,8 @@ class News(db.Model):
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    author = db.relationship('User', backref=db.backref('news', lazy='dynamic'))
+    author = db.relationship(
+        'User', backref=db.backref('news', lazy='dynamic'))
 
     def __repr__(self):
         return '<News %r>' % self.title

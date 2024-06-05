@@ -2,8 +2,11 @@ from app.models import User, Role
 from app import create_app, db
 # from flask_migrate import Migrate
 import unittest
+from app.admin import admin
+
 flask_app = create_app('default')
-# migrate = Migrate(flask_app, db)
+
+admin.init_app(flask_app)
 
 
 @flask_app.cli.command('test')
