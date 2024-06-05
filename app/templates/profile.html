@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title mb-0">Профиль</h1>
+                </div>
+                <div class="card-body">
+                    {% if current_user.is_authenticated %}
+                        <div class="mb-3">
+                            <h5 class="card-title">Электронная почта:</h5>
+                            <p class="card-text">{{ current_user.email }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5 class="card-title">Имя:</h5>
+                            <p class="card-text">{{ current_user.name }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <a href="{{ url_for('main.user_library') }}" class="btn btn-primary" style="border: none;">Моя библиотека</a>
+                        </div>
+                    {% else %}
+                        <p>Пожалуйста, войдите в систему или зарегистрируйтесь, чтобы получить доступ к профилю.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

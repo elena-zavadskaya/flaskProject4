@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if book %}
+        <div class="row">
+            <div class="col-md-4">
+                {% if book.volumeInfo.imageLinks %}
+                    <img src="{{ book.volumeInfo.imageLinks.thumbnail }}" class="img-fluid" alt="Обложка книги">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h2>{{ book.volumeInfo.title }}</h2>
+                <p><strong>Автор:</strong> {{ book.volumeInfo.authors | join(', ') }}</p>
+                <p><strong>Описание:</strong> {{ book.volumeInfo.description }}</p>
+                <p><strong>Дата публикации:</strong> {{ book.volumeInfo.publishedDate }}</p>
+                <p><strong>Издатель:</strong> {{ book.volumeInfo.publisher }}</p>
+
+                <form method="post" action="{{ url_for('main.add_to_library', book_id=book.id) }}">
+                    <button type="submit" class="btn btn-primary">Добавить в библиотеку</button>
+                </form>
+
+                {% if message %}
+                    <div class="alert alert-info mt-3">{{ message }}</div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p>Книга не найдена.</p>
+    {% endif %}
+</div>
+{% endblock %}

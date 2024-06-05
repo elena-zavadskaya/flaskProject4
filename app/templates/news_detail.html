@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h1 class="card-title">{{ news.title }}</h1>
+                    {% if news.image %}
+                        <img src="{{ news.image }}" class="card-img-top mb-3" alt="{{ news.title }}">
+                    {% endif %}
+                    <div class="news-description">
+                        <p class="card-text">{{ news.description }}</p>
+                    </div>
+                    <p class="card-text">{{ news.content }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">Автор: {{ news.author.username }}</small>
+                        {% if current_user.is_authenticated and current_user.is_admin() %}
+                            <a href="{{ url_for('main.edit_news', news_id=news.id) }}" class="btn btn-primary btn-sm ms-2">Редактировать</a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
