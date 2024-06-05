@@ -1,17 +1,23 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% from 'bootstrap5/form.html' import render_form %}
     {{ bootstrap.load_css() }}
     {{ bootstrap.load_js() }}
 </head>
 <body>
-<h1>Регистрация</h1>
-    <form class="col-lg-3 mx-auto" method="post">
-        {{ render_form(form) }}
-    </form>
+    <div class="registration-container col-lg-4 col-md-6 col-sm-8 mx-auto">
+        <h2 class="text-center">Регистрация</h2>
+        <form method="POST">
+            {{ render_form(form) }}
+        </form>
+    </div>
 </body>
 </html>
+
+

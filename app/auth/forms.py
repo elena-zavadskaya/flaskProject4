@@ -1,16 +1,16 @@
 from flask_wtf import FlaskForm
 
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp, ValidationError
 
-from app.models import User
+from app.models import User, Role
 
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Length(1, 64), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Login me')
-    submit = SubmitField("Log in")
+    remember_me = BooleanField('Запомнить меня')
+    submit = SubmitField("Войти")
 
 
 class RegistrationForm(FlaskForm):
@@ -18,7 +18,13 @@ class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(1, 64), Regexp('[A-Za-z][A-Za-z0-9_.]*$', 0, 'Username must have only letters, numbers, dots, and underscores')])
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('password2', message="Password doesn't match")])
     password2 = PasswordField('Confirm Password', validators=[DataRequired()])
+    name = StringField('Full Name', validators=[DataRequired(), Length(1, 64)])
+    role = SelectField('Role', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Register')
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.role.choices = [(role.id, role.name) for role in Role.query.all()]
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
@@ -27,3 +33,11 @@ class RegistrationForm(FlaskForm):
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError("Username already use")
+
+
+class NewsForm(FlaskForm):
+    title = StringField('Название', validators=[DataRequired(), Length(max=128)])
+    image = StringField('Изображение URL', validators=[Length(max=256)])
+    description = TextAreaField('Описание', validators=[Length(max=256)])
+    content = TextAreaField('Текст', validators=[DataRequired()])
+    submit = SubmitField('Отправить')

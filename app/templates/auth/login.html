@@ -1,20 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Авторизация</title>
     {% from 'bootstrap5/form.html' import render_form %}
     {{ bootstrap.load_css() }}
     {{ bootstrap.load_js() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-<h1>Авторизация</h1>
-    <form class="col-lg-3 mx-auto" method="post">
-        {{ render_form(form) }}
-    </form>
-<div class="text-center fs-6">
-    <a href="{{ url_for('auth.register') }}">Зарегистрироваться</a>
-</div>
+    <div class="login-container col-lg-4 col-md-6 col-sm-8 mx-auto">
+        <h1 class="text-center">Авторизация</h1>
+        <form method="post">
+            {{ render_form(form) }}
+        </form>
+        <div class="text-center register-link">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Зарегистрироваться</a>
+        </div>
+    </div>
 </body>
 </html>
+
+

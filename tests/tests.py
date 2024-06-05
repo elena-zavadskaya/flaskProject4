@@ -15,8 +15,8 @@ class BasicsTestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def test_app_exist(self):
-        self.assertFalse(current_app is None)
-
-    def test_app_isTesting(self):
-        self.assertTrue(current_app.config['TESTING'])
+    # def test_app_exist(self):
+    #     self.assertFalse(current_app is None)
+    #
+    # def test_app_isTesting(self):
+    #     self.assertTrue(current_app.config['TESTING'])

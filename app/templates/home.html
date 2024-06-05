@@ -1,5 +1,63 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Добро пожаловать на домашнюю страницу!</h1>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="search-bar mb-4">
+                <form method="post" action="{{ url_for('main.home') }}">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Искать книги...">
+                        <button class="btn btn-primary" type="submit">Искать</button>
+                    </div>
+                </form>
+            </div>
+            {% if current_user.is_authenticated and current_user.is_admin() %}
+                <div class="mb-4">
+                    <a href="{{ url_for('main.add_news') }}" class="btn btn-success" style="border: none;">Добавить новость</a>
+                </div>
+            {% endif %}
+            <div class="book-search-results">
+                {% if search_results %}
+                    <h2>Результаты поиска книг</h2>
+                    <div class="row">
+                        {% for item in search_results %}
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div class="card h-100 " style="border: none;">
+                                    {% if item.volumeInfo.imageLinks %}
+                                        <img src="{{ item.volumeInfo.imageLinks.thumbnail }}" class="card-img-top" alt="{{ item.volumeInfo.title }}" style="height: 300px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="Placeholder" style="height: 300px; object-fit: cover;">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.volumeInfo.title }}</h5>
+                                        <p class="card-text">Автор: {% for author in item.volumeInfo.authors %}{{ author }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
+                                        <a href="{{ url_for('main.book_detail', book_id=item.id) }}" class="btn btn-primary" style="border: none;">Подробнее</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div id="news-section" class="mt-4">
+                <h2>Новости из мира литературы</h2>
+                <div class="news-feed">
+                    {% for news in news_list %}
+                        <div class="card mb-3" style="border: none;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ news.title }}</h5>
+                                {% if news.image %}
+                                    <img src="{{ news.image }}" class="card-img-top" alt="{{ news.title }}" style="height: 300px; object-fit: cover;">
+                                {% endif %}
+                                <p class="card-text">{{ news.description }}</p>
+                                <a href="{{ url_for('main.news_detail', news_id=news.id) }}" class="btn btn-primary">Читать далее</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

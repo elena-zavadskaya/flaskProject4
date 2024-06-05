@@ -3,15 +3,18 @@ from flask_mail import Message
 from . import auth
 from .forms import LoginForm, RegistrationForm
 from .. import db, mail
-from ..models import User
+from ..models import User, Role
 from flask_login import login_user, login_required, logout_user, current_user
 from threading import Thread
 
+
 @auth.before_app_request
 def before_request():
-    if current_user.is_authenticated and not current_user.confirmed and request.blueprint != 'auth' \
-            and request.endpoint != 'static':
-        return redirect(url_for('auth.unconfirmed'))
+    if current_user.is_authenticated:
+        current_user.ping()
+        if current_user.is_authenticated and not current_user.confirmed and request.blueprint != 'auth' and request.endpoint != 'static':
+            return redirect(url_for('auth.unconfirmed'))
+
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -19,12 +22,12 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.password_verify(form.password.data):
-            login_user(user, form.remember_me.data)
+            login_user(user)
             next = request.args.get("next")
             if next is None or not next.startswith('/'):
-                next = url_for('main.set_cookie')
+                next = url_for('main.home')
             return redirect(next)
-        flash('Invalid username or password')
+        flash('Invalid email or password')
     return render_template("auth/login.html", form=form)
 
 
@@ -32,15 +35,14 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email=form.email.data,
-                    username=form.username.data)
-
-        db.session.add(user)
+        user = User(email=form.email.data, username=form.username.data, name=form.name.data,
+                    role=Role.query.get(form.role.data))
         user.set_password(form.password.data)
+        db.session.add(user)
         db.session.commit()
         token = user.generate_confirmation_token()
         send_confirm(user, token)
-        # flash("Register complete")
+        flash('Вам отправлено письмо для подтверждения аккаунта.')
         return redirect(url_for('auth.login'))
     return render_template("auth/registration.html", form=form)
 
@@ -50,7 +52,7 @@ def register():
 def logout():
     logout_user()
     flash("You have been logged out.")
-    return redirect(url_for('main.set_cookie'))
+    return redirect(url_for('main.home'))
 
 
 @auth.route('/confirm/<token>')
@@ -58,28 +60,26 @@ def logout():
 def confirm(token):
     print(token)
     if current_user.confirmed:
-        return redirect(url_for('main.set_cookie'))
+        return redirect(url_for('main.home'))
     if current_user.confirm(token):
         db.session.commit()
         flash("Подтверждено")
         return redirect(url_for('auth.login'))
     else:
         flash("Ссылка не работает")
-    return redirect(url_for('main.set_cookie'))
+    return redirect(url_for('main.home'))
 
 
 @auth.route('/unconfirmed')
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
-        return redirect(url_for('main.set_cookie'))
+        return redirect(url_for('main.home'))
     return render_template('auth/unconfirmed.html')
 
 
 def send_confirm(user, token):
     confirm_url = url_for('auth.confirm', token=token, _external=True)
     send_mail(user.email, 'Подтвердите свою учетную запись', 'auth/confirm', user=user, confirm_url=confirm_url)
-
-
 
 
 def send_mail(to, subject, template, **kwargs):
